@@ -35,4 +35,20 @@ This repository provides a comprehensive guide for downloading public SRA (Seque
    ```
 2. **Automatic download**
    - Using python script
-   - 
+   - download accession list file from the [SRA] (https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRP335420&o=acc_s%3Aa)
+   ```python
+   import os
+   import sys, glob
+
+   # samples
+   sra_list = []  # 빈 리스트를 생성하여 줄을 저장할 준비
+   Acc = "/Users/wy/Exercise_scRNAseq/SRR_Acc_List.txt"
+   with open(Acc, 'r') as file:
+       for line in file:
+           sra_list.append(line.strip())  # 각 줄의 개행 문자(\n)를 제거하고 리스트에 추가
+           
+   for i in sra_list:
+       os.system("prefetch --progress "+i) #download
+       os.system("fastq-dump --split-files --gzip " + i+"/"+i+".sra")
+       os.system("rm -r " + i + "/")
+   ```
