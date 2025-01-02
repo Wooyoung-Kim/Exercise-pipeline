@@ -46,29 +46,20 @@ conda install -c bioconda -c conda-forge sra-tools
 Ensure you have an accession list file ready (e.g., `SRR_Acc_List.txt`). Use the script below:
 
 ```python
-# SRA 데이터 다운로드 및 처리 자동화 스크립트
-
 import os
+import sys, glob
 
-# SRA ID 목록 파일 경로 설정
-accession_file = "/Users/wy/Exercise_scRNAseq/SRR_Acc_List.txt"
-
-try:
-    # 파일 읽기 및 SRA ID 저장
-    with open(accession_file, 'r') as file:
-        sra_list = [line.strip() for line in file]
-    
-    # SRA 데이터 다운로드 및 변환
-    for sra_id in sra_list:
-        print(f"Processing {sra_id}...")
-        os.system(f"prefetch --progress {sra_id}")
-        os.system(f"fastq-dump --split-files --gzip {sra_id}/{sra_id}.sra")
-        os.system(f"rm -r {sra_id}/")
-    print("All processes completed successfully.")
-except FileNotFoundError:
-    print(f"Error: File not found - {accession_file}")
-except Exception as e:
-    print(f"An unexpected error occurred: {e}")
+# samples
+sra_list = []  # 빈 리스트를 생성하여 줄을 저장할 준비
+Acc = "/Users/wy/Exercise_scRNAseq/SRR_Acc_List.txt"
+with open(Acc, 'r') as file:
+    for line in file:
+        sra_list.append(line.strip())  # 각 줄의 개행 문자(\n)를 제거하고 리스트에 추가
+        
+for i in sra_list:
+    os.system("prefetch --progress "+i) #download
+    os.system("fastq-dump --split-files --gzip " + i+"/"+i+".sra")
+    os.system("rm -r " + i + "/")
 ```
 
 ## Common Issues and Tips
